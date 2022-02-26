@@ -33,10 +33,10 @@ function addQue()
 function getQue()
 {
     $qno = null;
-    if(isset($_POST['exercise'],$_POST['questionCount'],$_POST['difficulty'],$_POST['image']))
+    if(isset($_POST['exerciseId'],$_POST['questionCount'],$_POST['difficulty'],$_POST['image']))
     {
         $quiz = new Quiz();
-        echo $quiz->getQuizQuestion($_POST['exercise'],$_POST['questionCount'],$_POST['difficulty'],$_POST['image']);
+        echo $quiz->getQuizQuestion($_POST['exerciseId'],$_POST['questionCount'],$_POST['difficulty'],$_POST['image']);
         
     }
    

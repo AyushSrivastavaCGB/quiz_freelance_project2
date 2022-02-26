@@ -166,24 +166,47 @@ class DB
         return $this->_error;
     }
 
-  
-
-   
 
     public function getQues($table,$get)                              //array like [1,2,3,4]                             
     {
-      
-        $sql = "SELECT * FROM $table WHERE exercise = ? AND type = ? AND `difficulty` = ?";
+        if($get['difficulty'] == 3)
+        {
+            //mixed
+            unset($get['difficulty']);
+            $sql = "SELECT * FROM $table WHERE exerciseId = ? AND type = ? ORDER BY RAND()";
+            return $this->query($sql,$get)->results();
+            
+        }else{
+            $sql = "SELECT * FROM $table WHERE exerciseId = ? AND type = ? AND `difficulty` = ?";
+            return $this->query($sql,$get)->results();
+        }
+        
 
-        return $this->query($sql,$get)->results();
     }
 
     public function getQuesImage($table,$get)                              //array like [1,2,3,4]                             
     {
       
-        $sql = "SELECT * FROM $table WHERE exercise = ? AND type = ?";
+        $sql = "SELECT * FROM $table WHERE exerciseId = ? AND type = ?";
 
         return $this->query($sql,$get)->results();
+    }
+
+
+    public function getExercise($id)
+    {
+        $sql = "SELECT * FROM exercise WHERE id = ?";
+
+        return $this->query($sql,['id' => $id])->results();
+    }
+
+    //function to get all exercise data
+
+    public function getAllExercise()
+    {
+        $sql = "SELECT * FROM exercise";
+
+        return $this->query($sql,[])->results();
     }
 
 

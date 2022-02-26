@@ -26,14 +26,38 @@ class Quiz{
 
 
     /**
+     * function to get exercise data
+     */
+    
+    public function getExercise($id)
+    {
+        $db = DB::getInstance();
+        $data = $db->getExercise($id);
+        if(count($data) > 0)
+        {
+            return $data[0];
+        }
+
+        return null;
+    }
+
+    /**
      * function to getQuiz Questions
      */
 
-    public function getQuizQuestion($exercise,$num,$difficulty,$image)
+    public function getQuizQuestion($exerciseId,$num,$difficulty,$image)
     {
         $db = DB::getInstance();
+        $exerciseData = $db->getExercise($exerciseId);
+
+        if(count($exerciseData) == 0)
+        {
+            return json_encode(array("status" => 0, "msg" => "exercise not found"));
+        }
+        $exerciseData = $exerciseData[0];
+
         $get = array(
-            "exercise" => $exercise
+            "exerciseId" => $exerciseId
         );
 
         if($image == "1")
@@ -43,13 +67,9 @@ class Quiz{
             $data = $db->getQuesImage("QuestionBank",$get);
         }else{
             $get['type'] = 1;
-            if($difficulty == "Mixed")
-            {
-                
-            }else{
-                $get['difficulty'] = $difficulty;
-            }
-
+            
+            $get['difficulty'] = $difficulty;
+    
             $data = $db->getQues("QuestionBank",$get);
         }
        
@@ -75,7 +95,7 @@ class Quiz{
                 "question"  => $question->question,
                 "id"        => $question->id,
                 "options"   => $options,
-                "heading"   => $question->heading,
+                "heading"   => $exerciseData->heading,
                 "type"      => $question->type
             );
         }
@@ -93,8 +113,8 @@ class Quiz{
         $data = $db->get("QuestionBank",array("id","=",$id))->results();
         if(count($data) == 1)
         {
-            $answer = trim($answer);
-            $correctAnswer = trim($data[0]->ans);
+            $answer         = trim($answer);
+            $correctAnswer  = trim($data[0]->ans);
 
             if(strcasecmp($answer,$correctAnswer) == 0)
             {

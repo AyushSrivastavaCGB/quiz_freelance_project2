@@ -30,6 +30,8 @@ $(document).ready(function (){
     var clearTimer = false;
     var mcq_selected_ans = null;
 
+    var scores = {};
+
 
     // getQuestions();
 
@@ -40,7 +42,7 @@ $(document).ready(function (){
             url: "../api/",
             data:{
                 s:"getQues",
-                exercise:exercise,
+                exerciseId:exerciseID,
                 difficulty:config.difficulty,
                 questionCount:config.questionCount,
                 image:image
@@ -69,6 +71,7 @@ $(document).ready(function (){
                     duration = 60 * 10,
                     display = document.querySelector('#time_left');
                     startTimer(display);
+                    console.log(scoreCard);
                 }
             }
         });
@@ -91,6 +94,21 @@ $(document).ready(function (){
 
 
     function makePage() {
+        //for score
+        scoreCard.correct = 0;
+        scoreCard.incorrect = 0;
+        for (let key in scores) {
+            if (scores.hasOwnProperty(key)) {
+                if(scores[key] === 1)
+                {
+                    scoreCard.correct += 1;
+                }else{
+                    scoreCard.incorrect += 1;
+                }
+            }
+            console.log(scoreCard);
+        }
+
         $("#correctAns").text(scoreCard.correct);
         $("#incorrectAns").text(scoreCard.incorrect);
         $("#feedback_div").html("");
@@ -260,6 +278,8 @@ $(document).ready(function (){
                         {
                             document.getElementById('success_sound').play();
                         }
+
+                        scores[scoreCard.questionId] = 1;
                         
                         scoreCard.correct += 1;
 
@@ -282,6 +302,7 @@ $(document).ready(function (){
                             document.getElementById('error_sound').play();
                         }
                         scoreCard.incorrect += 1;
+                        scores[scoreCard.questionId] = 0;
                         $("#incorrectAns").text(scoreCard.incorrect);
                         $("#result_div").html(
                             `<div class="alert alert-danger">
@@ -298,7 +319,7 @@ $(document).ready(function (){
                     }
                     enterOperations.enable = true;
                     enterOperations.showNext  = true;
-
+                    console.log(scores);
                     checkFinish();
                 }
             }

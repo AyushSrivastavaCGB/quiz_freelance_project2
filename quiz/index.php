@@ -1,14 +1,33 @@
 <?php
+require_once dirname(__DIR__ ).'/classes/Quiz.php';
 
-if(isset($_GET['exercise']))
+if(isset($_GET['id']))
 {
-    $exercise = $_GET['exercise'];
+    $exerciseId = $_GET['id'];
+    $exercise = "";
+
+    //get exercise name
+    $quiz = new Quiz();
+    $data = $quiz->getExercise($exerciseId);
+    if($data != null)
+    {   
+        $exercise = $data->exercise;
+    }else{
+        http_response_code(404);
+        die();
+    }
+}else{
+    //return page not found
+    http_response_code(404);
+    die();
 }
 $image = 0;
 if(isset($_GET['image']) && $_GET['image'] == "true")
 {
     $image = 1;
 }
+
+
 
 ?>
 <!DOCTYPE html>
@@ -29,6 +48,7 @@ if(isset($_GET['image']) && $_GET['image'] == "true")
 
 <script type="text/javascript">
     const exercise = "<?php echo $exercise; ?>";
+    const exerciseID = "<?php echo $exerciseId; ?>";
     const image = "<?php echo $image?>";
 </script>
 
@@ -122,14 +142,14 @@ if(isset($_GET['image']) && $_GET['image'] == "true")
               
 
                 <div class="p-2 text-center">
-                    <div class="h5 font-weight-bold">Question : <span id="number"> </span></div>
+                    <div class="h6 font-weight-bold">Question : <span id="number"> </span></div>
                 </div>
 
                 <div class="p-2 d-flex" style="margin-right: 20px;">
                 
                 
                     <div class="p-2" >
-                        <h3 style="color:black"> Time : <span id="time_left"></span></h3>
+                        <h5 style="color:black"> Time : <span id="time_left"></span></h5>
                         
                     </div>
                     <div class="p-2">
